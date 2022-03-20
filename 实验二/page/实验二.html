@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验二</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<!-- 199000832-邱兴亮 -->
+<body>
+    <div id="app">
+    </div>
+    <template id="root">
+        <div class="big">
+            <!-- 上面部分 -->
+            <div class="top">
+                    <span>手机</span>
+                    <div>
+                        <span>查看更多</span>
+                        <span class="tubiao">></span>
+                    </div>
+                    
+            </div>
+            <!-- 主题部分 -->
+            <div class="main">
+                <!-- 左边部分 -->
+                <div class="left">
+                    <img src="../img/ad1.png" alt="">
+                </div>
+                <!-- 右边部分 -->
+                <div class="right">
+                    <div class="right-item" v-for="item in phoneList">
+                        <img :src="item.img" alt="">
+                        <text>{{item.title}}</text>
+                        <text class="des">{{item.des}}</text>
+                        <text class="price" v-html="item.price"></text>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script src="../js/vue.global.js"></script>
+    <script>
+        //vue相关的代码
+        const app=Vue.createApp({
+            // template:`<h2>hello </h2>`,
+            template:'#root',
+            data(){
+                return{
+                    phoneList:[
+                        {id:'100081',img:'../img/phone1.png',title:'Redmi K50 电竞版',des:'全线拉满的冷血旗舰',price:'3299元起'},
+                        {id:'100082',img:'../img/phone2.png',title:'Xiaomi 12 Pro',des:'全新骁龙8│2KAMOLED屏幕',price:'4699元起'},
+                        {id:'100083',img:'../img/phone3.png',title:'Xiaomi 12',des:'全新骁龙8 |5000万主摄',price:'3699元起'},
+                        {id:'100084',img:'../img/phone4.png',title:'Xiaomi 12X',des:'骁龙870|5000万主摄',price:'2999元起'},
+                        {id:'100085',img:'../img/phone5.png',title:'Xiaomi 11青春活力版',des:'轻薄5G,内外皆出彩',price:'1899元起<text class="huaxian">4999元</text>'},
+                        {id:'100086',img:'../img/phone6.png',title:'Redmi Note 11 Pro系列',des:'三星AMOLED高刷屏',price:'1799元起'},
+                        {id:'100087',img:'../img/phone7.png',title:'Redmi Note 11 5G',des:'5000mAh大电量',price:'1199元起'},
+                        {id:'100088',img:'../img/phone8.png',title:'Redmi Note 11 4G',des:'5000mAh大电量',price:'969元起<text class="huaxian">999元</text>'}
+                    ]
+                }
+            },
+            methods: {
+                jia(key){
+                    this.shngapin[key].Number+=1;
+                    console.log(key);
+                    this.shngapin[key].price=this.shngapin[key].Number*this.shngapin[key].priceli;
+                },
+                jian(key){
+                    if(this.shngapin[key].Number>0){
+                        this.shngapin[key].Number-=1;
+                        this.shngapin[key].price=this.shngapin[key].Number*this.shngapin[key].priceli;
+                    }
+                }
+            },
+        });//199000832-邱兴亮
+
+        //将APP挂载到id为app的div上
+        app.mount("#app");
+    </script>
+</body>
+</html>
+
