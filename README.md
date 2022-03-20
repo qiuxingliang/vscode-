@@ -15,3 +15,4 @@ const phoneList = [
 参考地址: https://www.mi.com/
 3．使用v-for指令遍历phoneList，展示手机数据。
 <li class="xxx"v-for="xx in xxx" :key="xxx">...</li>4．使用gitee 的 pages服务部署以上实验的页面。
+[实验二页面地址](https://qiuxingliang.github.io/vscode-/实验二/page/实验二.html)
