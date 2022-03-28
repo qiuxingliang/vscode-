@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>购物车</title>
+		<link rel="stylesheet" href="css/style.css">
+		<script src="./js/data.js"></script>
+	</head>
+
+	<body>
+		<div id="app"></div>
+	<template id="root">
+			
+		
+		<div class="shop-cart">
+			<div class="tabs">
+				<div class="border">
+					<!-- data-*表示自定义属性。 -->
+					<div class="title active" data-index="0">
+						全部商品
+						<span class="count">3</span>
+					</div>
+					<div class="title" data-index="1">
+						降价商品
+						<span class="count">0</span>
+					</div>
+					<div class="title last" data-index="2">
+						库存紧张
+						<span class="count">0</span>
+					</div>
+					<div class="line"></div>
+				</div>
+			</div>
+
+			<div class="lists">
+				<div class="header">
+					<ul class="clearfix">
+						<li>
+							<input type="checkbox" class="select-all" v-model="checked" @change="check()">
+							<label>全选</label>
+						</li>
+						<li class="product-info">商品信息</li>
+						<li>单价</li>
+						<li>数量</li>
+						<li>金额</li>
+						<li>操作</li>
+					</ul>
+				</div>
+				<!-- 实验需要操作的节点 -->
+				<div id="shoplist" class="shoplist">
+					<!-- 店铺内容及样式参考 -->
+					
+					<div class="shop" v-for="(item,index1) in shopcarts" :key="shopcarts.shopId">
+						<div class="shop-info">
+							<input type="checkbox" v-model="item.ischeck" @change="checkitem(item)">
+							<span class="shop-tip">店铺：</span>
+							<a class="shop-name" href="#">{{item.shopName}}</a>
+							<a href="#" class="wangwang">旺旺</a>
+						</div>
+						<div class="products">
+							<div class="item" v-for="(i,index2) in item.products" :key="item.products.productId">
+								<div class="select-logo">
+									<input type="checkbox" v-model="i.isActivity" @change="itemcheck(i,item)">
+									<img :src="i.topImg" alt="产品logo">
+								</div>
+								<div class="product-detail">
+									<div class="left">
+										<a href="#" class="product-name">
+											{{i.productName}}
+										</a>
+										<div class="logos">
+											<a href="#" class="card">信用卡</a>
+											<a href="#" class="service">保障服务</a>
+											<a href="#" class="order">订单险</a>
+											<a href="#" class="seven">7天无理由</a>
+										</div>
+									</div>
+									<div class="right" v-html="i.spec">
+										
+									</div>
+								</div>
+								<div class="price">
+									<p class="market-price">￥{{i.marketPrice}}</p>
+									<p class="real-price">￥{{i.price}}</p>
+								</div>
+								<div class="count">
+									<span class="sub" @click="jian(index1,index2)">-</span>
+									<span class="input"><input type="text" v-model="i.count"></span>
+									<span class="add" @click="jia(index1,index2)">+</span>
+								</div>
+								<div class="amount">￥{{i.count*i.price}}</div>
+								<div class="delete" @click="sanchu(item,i)">
+									<a href="#">删除</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+
+			<div class="operate">
+				<div class="left">
+					<input type="checkbox" class="select-all-footer">
+					<a href="javascript:void(0);" @click="deletaall()">删除</a>
+				</div>
+
+				<div class="right">
+					<div>已选择商品<span class="selected-count">{{num}}</span>件</div>
+					<div class="amount">合计（不含运费）： <span class="sum">￥{{sum}}.00</span></div>
+					<a href="javascript:void(0);" class="settle">结算</a>
+				</div>
+			</div>
+		</div>
+	</template>
+		<script src="js/vue.global.js"></script>
+		<script>
+			// 实现头部的动画
+			var titles = document.querySelectorAll('.title')
+			var line = document.querySelector('.line')
+			for (let i = 0; i < titles.length; i++) {
+				titles[i].addEventListener('mouseenter', function() {
+					for (var j = 0; j < titles.length; j++) {
+						titles[j].classList.remove('active')
+					}
+					this.classList.add('active')
+					line.style.left = i * line.offsetWidth + 'px'
+				})
+			}
+			// console.log(shopcarts)
+		</script>
+		 <script>
+			//vue相关的代码
+			const app=Vue.createApp({
+				// template:`<h2>hello </h2>`,
+				template:'#root',
+				data(){
+					return{
+						shopcarts:shopcarts,
+						// num:0,
+						checked:false
+						// sum:0
+					}
+				},
+				computed:{
+					sum(){
+						var i=0
+							this.shopcarts.forEach(j=> {
+						    	j.products.forEach(o => {
+						      		if(o.isActivity) {
+										i+=o.count*o.price
+						      		}
+						    	})
+						  	})
+						return i 
+					},
+					num(){
+						var n=0
+							this.shopcarts.forEach(j=> {
+						    	j.products.filter(o => {
+						      		if(o.isActivity) {
+										n+=o.count
+						      		}
+						    	})
+							})
+						return n 
+					}
+				},
+				watch:{
+					// shopcarts:{
+					// 	handler(n,o){
+					// 		this.sum=0
+					// 		n.shopcarts.forEach(j=> {
+					// 	    	j.products.forEach(o => {
+					// 	      		if(o.isActivity) {
+					// 					this.sum+=o.count*o.price
+					// 	      		}
+					// 	    	})
+					// 	  	})
+					// 	}
+					// },
+					// deep:true,
+					// immediate:true
+				},
+				methods: {
+					jian(index1,index2){
+						// console.log(this.shopcarts[index1].products[index2].isActivity)
+
+						if(this.shopcarts[index1].products[index2].count>0){
+							return this.shopcarts[index1].products[index2].count-=1
+						}
+						
+						// console.log(this.shopcarts[index1].products[index2].amount)
+					},
+					jia(index1,index2){
+						return this.shopcarts[index1].products[index2].count+=1
+					},
+					//删除商品
+					sanchu(item,i){
+						
+						item.products.splice(item.products.indexOf(i),1)
+						if(item.products.length<=0){
+							this.shopcarts.splice(this.shopcarts.indexOf(item),1)
+						}
+					},
+					//全选
+					check(){
+						// console.log(11)
+						if(this.checked){
+							this.shopcarts.forEach(j=> {
+								
+								j.ischeck=true
+						    	j.products.forEach(o => {
+									o.isActivity=true
+						    	})
+							})
+						}
+						else{
+							this.shopcarts.forEach(j=> {
+								j.ischeck=false
+						    	j.products.forEach(o => {
+									o.isActivity=false
+						    	})
+							})
+						}
+					},
+					//选商铺，商品全选
+					checkitem(item){
+						if(item.ischeck){
+							item.products.forEach(o => {
+								o.isActivity=true
+							})
+						}							
+						else{
+							item.products.forEach(o => {
+								o.isActivity=false
+							})
+						}	
+						//
+						var b=0
+						this.shopcarts.forEach(n=>{
+							if(n.ischeck){
+								b=b+1
+								// console.log(1)
+							}
+						})
+						// console.log(this.shopcarts.length)
+						if(b==this.shopcarts.length){
+							this.checked=true
+						}
+						else{
+							this.checked=false
+						}
+					},
+					//点商品反选商铺
+					itemcheck(i,item){
+						// console.log(i.isActivity)
+						// console.log(item.products.length)
+						// for(let n=0;n<i.)
+						let m=0
+						item.products.forEach(n=>{
+							if(n.isActivity){
+								m+=1
+							}
+						})
+						if(m==item.products.length){
+							item.ischeck=true
+						}
+						else{
+							item.ischeck=false
+						}
+
+						
+					},
+					//全部删除
+					deletaall(){
+						this.shopcarts.splice(0,this.shopcarts.length)
+					}
+				},
+			});//199000832-邱兴亮
+	
+			//将APP挂载到id为app的div上
+			app.mount("#app");
+		</script>
+	</body>
+
+</html>
