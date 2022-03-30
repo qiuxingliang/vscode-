@@ -18,19 +18,23 @@
 			<div class="tabs">
 				<div class="border">
 					<!-- data-*表示自定义属性。 -->
-					<div class="title active" data-index="0">
+					<!-- <div class="title active" data-index="0">
 						全部商品
 						<span class="count">3</span>
 					</div>
-					<div class="title" data-index="1">
+					<div :class="['title',{active:selected}]" data-index="1" @click="changesty()">
 						降价商品
 						<span class="count">0</span>
 					</div>
 					<div class="title last" data-index="2">
 						库存紧张
 						<span class="count">0</span>
+					</div> -->
+					<div v-for="(item,index) in tablelist" :class="item.classobject" @mouseenter="active(item,index,tablelist)" :key="index">
+						{{item.text}}
+						<span class="count">{{item.num}}</span>
 					</div>
-					<div class="line"></div>
+					<div class="line" :style="{left:offsetwidth}"></div>
 				</div>
 			</div>
 
@@ -54,7 +58,7 @@
 					
 					<div class="shop" v-for="(item,index1) in shopcarts" :key="shopcarts.shopId">
 						<div class="shop-info">
-							<input type="checkbox" v-model="item.ischeck" @change="checkitem(item)">
+							<input type="checkbox" v-model="item.ischeck" @onmouseenter="checkitem(item)">
 							<span class="shop-tip">店铺：</span>
 							<a class="shop-name" href="#">{{item.shopName}}</a>
 							<a href="#" class="wangwang">旺旺</a>
@@ -140,10 +144,19 @@
 					return{
 						shopcarts:shopcarts,
 						// num:0,
-						checked:false
+						checked:false,
+						// selected:false,
+						tablelist:[
+							{text:'全部商品',num:3,classobject:'title active'},
+							{text:'降价商品',num:0,classobject:'title'},
+							{text:'库存紧张',num:0,classobject:'title last'}
+						],
+						offsetwidth:0
+						// classobject:{title:true,active:false}
 						// sum:0
 					}
 				},
+				//199000832-邱兴亮
 				computed:{
 					sum(){
 						var i=0
@@ -277,6 +290,17 @@
 					//全部删除
 					deletaall(){
 						this.shopcarts.splice(0,this.shopcarts.length)
+					},
+					//改变样式
+					active(item,index,tablelist){
+						tablelist.forEach((item)=>{
+							item.classobject="title"
+						})
+						item.classobject="title active"
+						this.offsetwidth=(index*123)+"px"
+						// console.log(item)
+						// console.log(index)
+						// console.log(tablelist)
 					}
 				},
 			});//199000832-邱兴亮
