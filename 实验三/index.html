@@ -72,7 +72,7 @@
 							<a href="#" class="wangwang">旺旺</a>
 						</div>
 						<div class="products">
-							<div :class="{item:true, listColor:index2%2}" v-for="(i,index2) in item.products" :key="item.products.productId">
+							<div :class="{item:true, listColor:i.isCard}" v-for="(i,index2) in item.products" :key="item.products.productId">
 								<div class="select-logo">
 									<!-- 选商品 -->
 									<span :class="{ckb:true,ckb_s:i.isActivity}" @click="itemcheck(i,item)" v-bind="i.isActivity"></span>
@@ -163,11 +163,42 @@
 							{text:'库存紧张',num:0,classobject:'title last'}
 						],
 						offsetwidth:0,
+						// i:0,
+						// listColor:true
 						// classobject:{title:true,active:false}
 						// sum:0
 					}
 				},
 				//199000832-邱兴亮
+				mounted(){
+					let n=0
+					this.shopcarts.forEach(i=>{
+						i.products.forEach(j=>{
+							n++
+							if(n%2==0){
+								j.isCard=false
+							}
+							else{
+								j.isCard=true
+							}
+						})
+					})
+				},
+				updated(){
+					// console.log(this.i)
+					let n=0
+					this.shopcarts.forEach(i=>{
+						i.products.forEach(j=>{
+							n++
+							if(n%2==0){
+								j.isCard=false
+							}
+							else{
+								j.isCard=true
+							}
+						})
+					})
+				},
 				computed:{
 					sum(){
 						var i=0
