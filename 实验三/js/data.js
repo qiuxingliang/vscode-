@@ -41,7 +41,9 @@ var shopcarts = [
                 // 购买的数量
                 count: 2,
                 // 金额
-                amount: 2398.00
+                amount: 2398.00,
+                iscolor2:false,
+				iscolor1:true
             },
             {
                 // 商品编号
@@ -76,7 +78,9 @@ var shopcarts = [
                 // 购买的数量
                 count: 2,
                 // 金额
-                amount: 2398.00
+                amount: 2398.00,
+                iscolor2:false,
+				iscolor1:true
             }
         ]
     },
@@ -119,7 +123,9 @@ var shopcarts = [
                 // 购买的数量
                 count: 2,
                 // 金额
-                amount: 336.00
+                amount: 336.00,
+                iscolor2:false,
+				iscolor1:true
             }
         ]
     },
@@ -162,7 +168,9 @@ var shopcarts = [
                 // 购买的数量
                 count: 1,
                 // 金额
-                amount: 118.00
+                amount: 118.00,
+                iscolor2:false,
+				iscolor1:true
             }
         ]
     }

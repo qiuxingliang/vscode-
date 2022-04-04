@@ -42,7 +42,12 @@
 				<div class="header">
 					<ul class="clearfix">
 						<li>
-							<input type="checkbox" class="select-all" v-model="checked" @change="check()">
+							<!-- 全选 -->
+							<!-- <input type="text" v-model="checked" style="display: none;"> -->
+							<span :class="{ckb:true,ckb_s:checked}" @click="check()" v-bind="checked"></span>
+
+							<!-- <input type="checkbox" class="select-all" v-model="checked" @change="check()"> -->
+
 							<label>全选</label>
 						</li>
 						<li class="product-info">商品信息</li>
@@ -58,15 +63,21 @@
 					
 					<div class="shop" v-for="(item,index1) in shopcarts" :key="shopcarts.shopId">
 						<div class="shop-info">
-							<input type="checkbox" v-model="item.ischeck" @onmouseenter="checkitem(item)">
+							<!-- 选店铺 -->
+							<span :class="{ckb:true,ckb_s:item.ischeck}" @click="checkitem(item)" v-bind="item.ischeck"></span>
+							<!-- <input type="checkbox" v-model="item.ischeck" @onmouseenter="checkitem(item)"> -->
+
 							<span class="shop-tip">店铺：</span>
 							<a class="shop-name" href="#">{{item.shopName}}</a>
 							<a href="#" class="wangwang">旺旺</a>
 						</div>
 						<div class="products">
-							<div class="item" v-for="(i,index2) in item.products" :key="item.products.productId">
+							<div :class="{item:true, listColor:index2%2}" v-for="(i,index2) in item.products" :key="item.products.productId">
 								<div class="select-logo">
-									<input type="checkbox" v-model="i.isActivity" @change="itemcheck(i,item)">
+									<!-- 选商品 -->
+									<span :class="{ckb:true,ckb_s:i.isActivity}" @click="itemcheck(i,item)" v-bind="i.isActivity"></span>
+									<!-- <input type="checkbox" v-model="i.isActivity" @change="itemcheck(i,item)"> -->
+
 									<img :src="i.topImg" alt="产品logo">
 								</div>
 								<div class="product-detail">
@@ -90,9 +101,9 @@
 									<p class="real-price">￥{{i.price}}</p>
 								</div>
 								<div class="count">
-									<span class="sub" @click="jian(index1,index2)">-</span>
+									<span :class="{sub:i.iscolor1,jian:i.iscolor2}" @click="jian(index1,index2,i)">-</span>
 									<span class="input"><input type="text" v-model="i.count"></span>
-									<span class="add" @click="jia(index1,index2)">+</span>
+									<span class="add" @click="jia(index1,index2,i)">+</span>
 								</div>
 								<div class="amount">￥{{i.count*i.price}}</div>
 								<div class="delete" @click="sanchu(item,i)">
@@ -151,7 +162,7 @@
 							{text:'降价商品',num:0,classobject:'title'},
 							{text:'库存紧张',num:0,classobject:'title last'}
 						],
-						offsetwidth:0
+						offsetwidth:0,
 						// classobject:{title:true,active:false}
 						// sum:0
 					}
@@ -198,8 +209,20 @@
 					// immediate:true
 				},
 				methods: {
-					jian(index1,index2){
+					jian(index1,index2,i){
 						// console.log(this.shopcarts[index1].products[index2].isActivity)
+						// console.log(i)
+						// i.iscolor2=i.count<=0?true:false
+						// i.iscolor1=i.count>0?true:false
+						if(i.count<=1){
+							i.iscolor2=true
+							i.iscolor1=false
+						}
+						else{
+							i.iscolor2=false
+							i.iscolor1=true
+						}
+						// console.log(i.count)
 
 						if(this.shopcarts[index1].products[index2].count>0){
 							return this.shopcarts[index1].products[index2].count-=1
@@ -207,7 +230,9 @@
 						
 						// console.log(this.shopcarts[index1].products[index2].amount)
 					},
-					jia(index1,index2){
+					jia(index1,index2,i){
+						i.iscolor2=false
+						i.iscolor1=true
 						return this.shopcarts[index1].products[index2].count+=1
 					},
 					//删除商品
@@ -220,13 +245,15 @@
 					},
 					//全选
 					check(){
-						// console.log(11)
+						// let che=true
+						this.checked=!this.checked
 						if(this.checked){
 							this.shopcarts.forEach(j=> {
 								
 								j.ischeck=true
 						    	j.products.forEach(o => {
 									o.isActivity=true
+									
 						    	})
 							})
 						}
@@ -238,9 +265,11 @@
 						    	})
 							})
 						}
+						
 					},
 					//选商铺，商品全选
 					checkitem(item){
+						item.ischeck=!item.ischeck
 						if(item.ischeck){
 							item.products.forEach(o => {
 								o.isActivity=true
@@ -266,13 +295,16 @@
 						else{
 							this.checked=false
 						}
+						
 					},
 					//点商品反选商铺
 					itemcheck(i,item){
+						
 						// console.log(i.isActivity)
 						// console.log(item.products.length)
 						// for(let n=0;n<i.)
 						let m=0
+						i.isActivity=!i.isActivity
 						item.products.forEach(n=>{
 							if(n.isActivity){
 								m+=1
@@ -280,11 +312,29 @@
 						})
 						if(m==item.products.length){
 							item.ischeck=true
+
 						}
 						else{
 							item.ischeck=false
+
 						}
 
+						let n=0
+						let sum=0
+						this.shopcarts.forEach(i=>{
+							i.products.forEach(j=>{
+								sum++
+								if(j.isActivity==true){
+									n++
+								}
+							})
+						})
+						if(n==sum){
+							this.checked=true
+						}
+						else{
+							this.checked=false
+						}
 						
 					},
 					//全部删除
